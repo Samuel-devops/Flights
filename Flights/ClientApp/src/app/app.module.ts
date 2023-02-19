@@ -24,7 +24,7 @@ import { BookFlightComponent } from './book-flight/book-flight.component';
     RouterModule.forRoot([
       { path: '', component: SearchFlightsComponent, pathMatch: 'full' },
       { path: 'search-flights', component: SearchFlightsComponent },
-      { path: 'book-flight', component: BookFlightComponent },
+      { path: 'book-flight/:flightId', component: BookFlightComponent },
     ]),
 
   ],
