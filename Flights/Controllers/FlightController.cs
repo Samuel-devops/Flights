@@ -75,11 +75,11 @@ namespace Flights.Controllers
         public IEnumerable<FlightRm> Search()
             => flights;
 
-        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
         [ProducesResponseType(typeof(FlightRm), 200)]
+        [HttpGet("{id}")]
         public ActionResult<FlightRm> Find(Guid id)
         {
             var flight = flights.SingleOrDefault(f => Equals(f.Id, id));

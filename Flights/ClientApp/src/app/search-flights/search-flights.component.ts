@@ -8,7 +8,6 @@ import { FlightRm } from '../api/models';
   styleUrls: ['./search-flights.component.css']
 })
 export class SearchFlightsComponent implements OnInit {
-
   searchResult: FlightRm[] = []
 
   constructor(private flightService: FlightService) { }
@@ -22,8 +21,8 @@ export class SearchFlightsComponent implements OnInit {
   }
 
   private handleError(err: any) {
+    console.log("Response Error. Status: ", err.status)
+    console.log("Response Error. Status Text: ", err.statusText)
     console.log(err)
   }
-
 }
-
