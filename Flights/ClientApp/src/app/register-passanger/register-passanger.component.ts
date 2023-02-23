@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PassangerService } from './../api/services/passanger.service';
 import { FormBuilder } from '@angular/forms';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-register-passanger',
@@ -8,9 +9,9 @@ import { FormBuilder } from '@angular/forms';
   styleUrls: ['./register-passanger.component.css']
 })
 export class RegisterPassangerComponent implements OnInit {
-
   constructor(private passangerService: PassangerService,
-    private fb: FormBuilder) { }
+    private fb: FormBuilder,
+    private authService: AuthService) { }
 
   form = this.fb.group({
     email: [''],
@@ -22,10 +23,24 @@ export class RegisterPassangerComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  checkPassenger(): void {
+    const params = { email: this.form.get('email')?.value }
+    // TODO :
+    //this.passangerService
+    //  //.findPassanger(params)
+    //  .subscribe(
+    //    this.login
+    //  )
+  }
+
   register() {
     console.log("Form Value: ", this.form.value);
     this.passangerService.registerPassanger({ body: this.form.value })
-      .subscribe(_ => console.log("send form to server!"));
+      .subscribe(this.login, console.error)
   }
 
+  private login = () => {
+    // TODO:
+    //this.authService.loginUser({ email: this.form.get('email')?.value })
+  }
 }
