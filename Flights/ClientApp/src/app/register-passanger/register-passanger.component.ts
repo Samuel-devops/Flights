@@ -24,13 +24,13 @@ export class RegisterPassangerComponent implements OnInit {
   }
 
   checkPassenger(): void {
-    const params = { email: this.form.get('email')?.value }
+    const params = { email: this.form.get('email')?.value! }
     // TODO :
-    //this.passangerService
-    //  //.findPassanger(params)
-    //  .subscribe(
-    //    this.login
-    //  )
+    this.passangerService
+      .findPassanger(params)
+      .subscribe(
+        this.login
+      )
   }
 
   register() {
@@ -41,6 +41,6 @@ export class RegisterPassangerComponent implements OnInit {
 
   private login = () => {
     // TODO:
-    //this.authService.loginUser({ email: this.form.get('email')?.value })
+    this.authService.loginUser({ email: this.form.get('email')?.value })
   }
 }
