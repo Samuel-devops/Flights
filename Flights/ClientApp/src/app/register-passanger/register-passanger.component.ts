@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { PassangerService } from './../api/services/passanger.service';
 import { FormBuilder } from '@angular/forms';
 import { AuthService } from '../auth/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register-passanger',
@@ -11,7 +12,8 @@ import { AuthService } from '../auth/auth.service';
 export class RegisterPassangerComponent implements OnInit {
   constructor(private passangerService: PassangerService,
     private fb: FormBuilder,
-    private authService: AuthService) { }
+    private authService: AuthService,
+    private router: Router) { }
 
   form = this.fb.group({
     email: [''],
@@ -25,11 +27,13 @@ export class RegisterPassangerComponent implements OnInit {
 
   checkPassenger(): void {
     const params = { email: this.form.get('email')?.value! }
-    // TODO :
     this.passangerService
       .findPassanger(params)
       .subscribe(
-        this.login
+        this.login, e => {
+          if (e.status != 404)
+            console.error(e)
+        }
       )
   }
 
@@ -40,7 +44,7 @@ export class RegisterPassangerComponent implements OnInit {
   }
 
   private login = () => {
-    // TODO:
     this.authService.loginUser({ email: this.form.get('email')?.value })
+    this.router.navigate(['/search-flights'])
   }
 }
