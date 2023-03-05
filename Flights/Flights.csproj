@@ -63,4 +63,12 @@
       </ResolvedFileToPublish>
     </ItemGroup>
   </Target>
+  
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\Samuel\source\repos\Flights\Flights\.editorconfig" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="C:\Users\Samuel\source\repos\Flights\Flights\.editorconfig" />
+  </ItemGroup>
 </Project>

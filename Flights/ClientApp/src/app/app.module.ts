@@ -9,6 +9,7 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { SearchFlightsComponent } from './search-flights/search-flights.component';
 import { BookFlightComponent } from './book-flight/book-flight.component';
 import { RegisterPassangerComponent } from './register-passanger/register-passanger.component';
+import { MyBookingsComponent } from './my-bookings/my-bookings.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { RegisterPassangerComponent } from './register-passanger/register-passan
     SearchFlightsComponent,
     BookFlightComponent,
     RegisterPassangerComponent,
+    MyBookingsComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -28,6 +30,7 @@ import { RegisterPassangerComponent } from './register-passanger/register-passan
       { path: 'search-flights', component: SearchFlightsComponent },
       { path: 'book-flight/:flightId', component: BookFlightComponent },
       { path: 'register-passanger', component: RegisterPassangerComponent },
+      { path: 'my-booking', component: MyBookingsComponent },
     ]),
 
   ],
