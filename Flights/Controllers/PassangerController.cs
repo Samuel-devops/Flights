@@ -1,44 +1,44 @@
-﻿using Flights.DTOs;
+namespace Flights.Controllers;
+
+using Flights.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Flights.ReadModels;
 
-namespace Flights.Controllers
+[Route("[controller]")]
+[ApiController]
+public class PassangerController : ControllerBase
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class PassangerController : ControllerBase
+    private static readonly IList<NewPassangerDto> Passangers = new List<NewPassangerDto>();
+
+    [HttpPost]
+    [ProducesResponseType(201)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(500)]
+    public IActionResult Register(NewPassangerDto dto)
     {
-        private static IList<NewPassangerDto> Passangers = new List<NewPassangerDto>();
+        if (Passangers.Contains(dto))
+        { return this.BadRequest(); }
+        Passangers.Add(dto);
+        System.Diagnostics.Debug.WriteLine(Passangers.Count);
+        return this.CreatedAtAction(nameof(Find), new { email = dto.Email });
+    }
 
-        [HttpPost]
-        [ProducesResponseType(201)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(500)]
-        public IActionResult Register(NewPassangerDto dto)
+    [HttpGet("{email}")]
+    public ActionResult<PassangerRm> Find(string email)
+    {
+        var passanger = Passangers.FirstOrDefault(p => p.Email == email);
+        if (passanger == null)
         {
-            if (Passangers.Contains(dto)) { return BadRequest(); }
-            Passangers.Add(dto);
-            System.Diagnostics.Debug.WriteLine(Passangers.Count);
-            return CreatedAtAction(nameof(Find), new { email = dto.Email });
+            return this.NotFound();
         }
 
-        [HttpGet("{email}")]
-        public ActionResult<PassangerRm> Find(string email)
-        {
-            var passanger = Passangers.FirstOrDefault(p => p.Email == email);
-            if (passanger == null)
-            {
-                return NotFound();
-            }
+        var rm = new PassangerRm(
+            passanger.Email,
+            passanger.FirstName,
+            passanger.LastName,
+            passanger.Gender
+            );
 
-            var rm = new PassangerRm(
-                passanger.Email,
-                passanger.FirstName,
-                passanger.LastName,
-                passanger.Gender
-                );
-
-            return Ok(rm);
-        }
+        return this.Ok(rm);
     }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PassangerService } from './../api/services/passanger.service';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
 
@@ -44,7 +44,7 @@ export class RegisterPassangerComponent implements OnInit {
   }
 
   private login = () => {
-    this.authService.loginUser({ email: this.form.get('email')?.value })
+    this.authService.loginUser({ email: this.form.get('email')?.value! })
     this.router.navigate(['/search-flights'])
   }
 }

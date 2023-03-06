@@ -73,4 +73,9 @@
       </button>
     </div>
   </form>
+  <div *ngIf="form.controls.number.invalid" class="invalid-feedback d-block">
+    <div>Number of Seats is invalid</div>
+  </div>
 </div>
+
+
