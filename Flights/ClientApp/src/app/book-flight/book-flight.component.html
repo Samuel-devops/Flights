@@ -72,7 +72,6 @@
         Book
       </button>
     </div>
-  </form>
   <div *ngIf="number.invalid && (number.dirty || number.touched)" class="invalid-feedback d-block">
     <div *ngIf="number.errors?.['required']">
       How many people do you want to book the flight for
@@ -84,4 +83,5 @@
       The Playne dont have more than 254 seats!
     </div>
   </div>
+  </form>
 </div>

@@ -16,10 +16,10 @@ export class RegisterPassangerComponent implements OnInit {
     private router: Router) { }
 
   form = this.fb.group({
-    email: [''],
-    firstName: [''],
-    lastName: [''],
-    isFemale: [true]
+    email: ['', Validators.compose([Validators.required, Validators.email, Validators.maxLength(100), Validators.minLength(3)])],
+    firstName: ['', Validators.compose([Validators.required, Validators.minLength(2), Validators.maxLength(35)])],
+    lastName: ['', Validators.compose([Validators.required, Validators.minLength(2), Validators.maxLength(35)])],
+    isFemale: [true, Validators.required]
   })
 
   ngOnInit(): void {
@@ -38,6 +38,10 @@ export class RegisterPassangerComponent implements OnInit {
   }
 
   register() {
+    if (this.form.invalid) {
+      return;
+    }
+
     console.log("Form Value: ", this.form.value);
     this.passangerService.registerPassanger({ body: this.form.value })
       .subscribe(this.login, console.error)
@@ -46,5 +50,18 @@ export class RegisterPassangerComponent implements OnInit {
   private login = () => {
     this.authService.loginUser({ email: this.form.get('email')?.value! })
     this.router.navigate(['/search-flights'])
+  }
+
+  get email() {
+    return this.form.controls.email
+  }
+  get firstName() {
+    return this.form.controls.firstName
+  }
+  get lastName() {
+    return this.form.controls.lastName
+  }
+  get isFemale() {
+    return this.form.controls.isFemale
   }
 }
