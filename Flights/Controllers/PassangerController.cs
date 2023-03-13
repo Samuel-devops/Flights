@@ -30,7 +30,7 @@ public class PassangerController : ControllerBase
         { return this.BadRequest(); }
 
         this.entities.Passengers.Add(passenger);
-        System.Diagnostics.Debug.WriteLine(this.entities.Passengers.Count);
+        this.entities.SaveChanges();
 
         return this.CreatedAtAction(nameof(Find), new { email = dto.Email });
     }

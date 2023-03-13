@@ -86,6 +86,7 @@ public class FlightController : ControllerBase
         {
             return this.Conflict(new { message = $"There are only {flight.RemainingNumberOfSeats} seats remaining!" });
         }
+        this.entities.SaveChanges();
 
         return this.CreatedAtAction(nameof(Find), new { id = dto.FlightId });
     }
