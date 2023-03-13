@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using Flights.DTOs;
 using Flights.Domain.Entities;
+using Flights.Domain.Errors;
 
 [Route("[controller]")]
 [ApiController]
@@ -20,7 +21,7 @@ public class FlightController : ControllerBase
             Random.Next(90, 5000).ToString(),
             new TimePlace("Los Angeles",DateTime.Now.AddHours(Random.Next(1, 3))),
             new TimePlace("Istanbul",DateTime.Now.AddHours(Random.Next(4, 10))),
-                Random.Next(1, 853)),
+                2),
     new (   Guid.NewGuid(),
             "Deutsche BA",
             Random.Next(90, 5000).ToString(),
@@ -126,12 +127,13 @@ public class FlightController : ControllerBase
             return this.NotFound();
         }
 
-        var booking = new Booking(
-            dto.FlightId,
-            dto.PassengerEmail,
-            dto.NumberOfSeats);
+        var error = flight.MakeBooking(dto.PassengerEmail, dto.NumberOfSeats);
 
-        flight.Bookings.Add(booking);
+        if (error is OverbookError)
+        {
+            return this.Conflict(new { message = $"There are only {flight.RemainingNumberOfSeats} seats remaining!" });
+        }
+
         return this.CreatedAtAction(nameof(Find), new { id = dto.FlightId });
     }
 }
