@@ -4,12 +4,15 @@ using Flights.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Flights.ReadModels;
 using Flights.Domain.Entities;
+using Flights.Data;
 
 [Route("[controller]")]
 [ApiController]
 public class PassangerController : ControllerBase
 {
-    private static readonly IList<Passenger> Passengers = new List<Passenger>();
+    private readonly Entities entities;
+
+    public PassangerController(Entities entities) => this.entities = entities;
 
     [HttpPost]
     [ProducesResponseType(201)]
@@ -23,18 +26,19 @@ public class PassangerController : ControllerBase
             dto.LastName,
             dto.Gender);
 
-        if (Passengers.Contains(passenger))
+        if (this.entities.Passengers.Contains(passenger))
         { return this.BadRequest(); }
 
-        Passengers.Add(passenger);
-        System.Diagnostics.Debug.WriteLine(Passengers.Count);
+        this.entities.Passengers.Add(passenger);
+        System.Diagnostics.Debug.WriteLine(this.entities.Passengers.Count);
+
         return this.CreatedAtAction(nameof(Find), new { email = dto.Email });
     }
 
     [HttpGet("{email}")]
     public ActionResult<PassangerRm> Find(string email)
     {
-        var passanger = Passengers.FirstOrDefault(p => p.Email == email);
+        var passanger = this.entities.Passengers.FirstOrDefault(p => p.Email == email);
         if (passanger == null)
         {
             return this.NotFound();
