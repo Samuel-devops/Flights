@@ -6,6 +6,7 @@ using Flights.DTOs;
 using Flights.ReadModels;
 using Flights.Data;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 [Route("[controller]")]
 [ApiController]
@@ -86,7 +87,15 @@ public class FlightController : ControllerBase
         {
             return this.Conflict(new { message = $"There are only {flight.RemainingNumberOfSeats} seats remaining!" });
         }
-        this.entities.SaveChanges();
+
+        try
+        {
+            this.entities.SaveChanges();
+        }
+        catch (DBConcurrencyException dbex)
+        {
+            return this.Conflict(new { message = $"An Error is ocurred during Booking, please try again!" });
+        }
 
         return this.CreatedAtAction(nameof(Find), new { id = dto.FlightId });
     }
