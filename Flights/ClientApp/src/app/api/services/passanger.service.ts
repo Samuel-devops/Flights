@@ -9,7 +9,7 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
-import { NewPassangerDto } from '../models/new-passanger-dto';
+import { NewPassengerDto } from '../models/new-passenger-dto';
 import { PassangerRm } from '../models/passanger-rm';
 
 @Injectable({
@@ -35,7 +35,7 @@ export class PassangerService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   registerPassanger$Response(params?: {
-    body?: NewPassangerDto
+    body?: NewPassengerDto
   },
   context?: HttpContext
 
@@ -65,7 +65,7 @@ export class PassangerService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   registerPassanger(params?: {
-    body?: NewPassangerDto
+    body?: NewPassengerDto
   },
   context?: HttpContext
 
