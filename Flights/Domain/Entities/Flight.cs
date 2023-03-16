@@ -1,6 +1,8 @@
 namespace Flights.Domain.Entities
 
 {
+    using System.Globalization;
+    using Flights.Controllers;
     using Flights.Domain.Errors;
 
     public class Flight
@@ -50,6 +52,21 @@ namespace Flights.Domain.Entities
             flight.Bookings.Add(booking);
 
             flight.RemainingNumberOfSeats -= numberOfSeats;
+            return null;
+        }
+
+        public object? CancleBooking(string passengerEmail, byte numberOfSeats)
+        {
+            var booking = Bookings.FirstOrDefault(b => numberOfSeats == b.NumberOfSeats
+                                   && passengerEmail.ToLower() == b.PassengerEmail.ToLower());
+
+            if (booking == null)
+            {
+                return new NotFoundError();
+            }
+
+            this.Bookings.Remove(booking);
+            this.RemainingNumberOfSeats += numberOfSeats;
             return null;
         }
     }

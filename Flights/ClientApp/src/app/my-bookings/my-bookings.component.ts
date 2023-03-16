@@ -10,20 +10,18 @@ import { Router } from '@angular/router';
   styleUrls: ['./my-bookings.component.css']
 })
 export class MyBookingsComponent implements OnInit {
-
   bookings!: BookingRm[];
 
   constructor(private bs: BookingService,
     private authService: AuthService,
-    private router: Router  ) { }
+    private router: Router) { }
 
   ngOnInit(): void {
-
     if (!this.authService.currentUser?.email) {
       this.router.navigate(['/register-passanger'])
     }
 
-    this.bs.listBooking({ email: this.authService.currentUser?.email?? '' })
+    this.bs.listBooking({ email: this.authService.currentUser?.email ?? '' })
       .subscribe(r => this.bookings = r);
   }
 
