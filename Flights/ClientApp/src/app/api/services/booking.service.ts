@@ -9,6 +9,7 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
+import { BookDto } from '../models/book-dto';
 import { BookingRm } from '../models/booking-rm';
 
 @Injectable({
@@ -120,6 +121,59 @@ export class BookingService extends BaseService {
 
     return this.listBooking$Response(params,context).pipe(
       map((r: StrictHttpResponse<Array<BookingRm>>) => r.body as Array<BookingRm>)
+    );
+  }
+
+  /**
+   * Path part for operation cancleBooking
+   */
+  static readonly CancleBookingPath = '/Booking';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `cancleBooking()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  cancleBooking$Response(params?: {
+    body?: BookDto
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<void>> {
+
+    const rb = new RequestBuilder(this.rootUrl, BookingService.CancleBookingPath, 'delete');
+    if (params) {
+      rb.body(params.body, 'application/*+json');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'text',
+      accept: '*/*',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `cancleBooking$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  cancleBooking(params?: {
+    body?: BookDto
+  },
+  context?: HttpContext
+
+): Observable<void> {
+
+    return this.cancleBooking$Response(params,context).pipe(
+      map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
 
