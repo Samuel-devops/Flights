@@ -7,8 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add DbContext
 builder.Services.AddDbContext<Entities>(options =>
-options.UseInMemoryDatabase(databaseName: "Flights"),
-ServiceLifetime.Singleton);
+options.UseSqlServer(builder.Configuration.GetConnectionString("Flights")));
 
 // Add services to the container.
 
@@ -25,15 +24,18 @@ builder.Services.AddSwaggerGen(c =>
     $"{e.ActionDescriptor.RouteValues["controller"]}");
 });
 
-builder.Services.AddSingleton<Entities>();
+builder.Services.AddScoped<Entities>();
 
 var app = builder.Build();
 
 var entities = app.Services.CreateScope().ServiceProvider.GetService<Entities>();
+entities.Database.EnsureCreated();
 var random = new Random();
 
-var flightsToSeed = new Flight[]
+if (!entities.Flights.Any())
 {
+    var flightsToSeed = new Flight[]
+    {
         new (   Guid.NewGuid(),
             "American Airlines",
             random.Next(90, 5000).ToString(),
@@ -82,10 +84,10 @@ var flightsToSeed = new Flight[]
             new TimePlace("Le Bourget",DateTime.Now.AddHours(random.Next(1, 58))),
             new TimePlace("Zagreb",DateTime.Now.AddHours(random.Next(4, 60))),
                 random.Next(1, 853))
-};
-entities.Flights.AddRange(flightsToSeed);
-
-entities.SaveChanges();
+    };
+    entities.Flights.AddRange(flightsToSeed);
+    entities.SaveChanges();
+}
 
 app.UseCors(builder => builder
                        .WithOrigins("*")
