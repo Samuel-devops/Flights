@@ -7,6 +7,7 @@ using Flights.ReadModels;
 using Flights.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
+using Flights.Domain.Entities;
 
 [Route("[controller]")]
 [ApiController]
@@ -26,9 +27,44 @@ public class FlightController : ControllerBase
     [ProducesResponseType(400)]
     [ProducesResponseType(500)]
     [ProducesResponseType(typeof(IEnumerable<FlightRm>), 200)]
-    public IEnumerable<FlightRm> Search()
+    public IEnumerable<FlightRm> Search([FromQuery] FlightSearchParameters @params)
     {
-        var flightRmList = this.entities.Flights.Select(flight => new FlightRm(
+        this.logger.LogInformation($"Searching flight: {@params.Destination}");
+
+        // All the Flights from Database
+        IQueryable<Flight> flights = this.entities.Flights;
+
+        if (!string.IsNullOrWhiteSpace(@params.Destination))
+        {
+            flights = flights.Where(f => f.Arrival.Place.Contains(@params.Destination));
+        }
+
+        if (!string.IsNullOrWhiteSpace(@params.From))
+        {
+            flights = flights.Where(f => f.Departure.Place.Contains(@params.From));
+        }
+
+        if (@params.FromDate is not null)
+        {
+            flights = flights.Where(f => f.Departure.Time >= @params.FromDate.Value.Date);
+        }
+
+        if (@params.ToDate is not null)
+        {
+            flights = flights.Where(f => f.Departure.Time <= @params.ToDate.Value.Date.AddDays(1).AddTicks(-1));
+        }
+
+        if (@params.NumberOfPassengers is not null and not 0)
+        {
+            flights = flights.Where(f => f.RemainingNumberOfSeats >= @params.NumberOfPassengers);
+        }
+        else
+        {
+            flights = flights.Where(f => f.RemainingNumberOfSeats >= 1);
+        }
+
+        var flightRmList = flights
+            .Select(flight => new FlightRm(
             flight.Id,
             flight.Airline,
             flight.Price,
@@ -92,7 +128,7 @@ public class FlightController : ControllerBase
         {
             this.entities.SaveChanges();
         }
-        catch (DBConcurrencyException dbex)
+        catch (DBConcurrencyException)
         {
             return this.Conflict(new { message = $"An Error is ocurred during Booking, please try again!" });
         }
